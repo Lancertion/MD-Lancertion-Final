@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.lancertion.R
+import com.app.lancertion.common.util.Date
 import com.app.lancertion.presentation.ui.theme.LancertionTheme
 
 @Composable
@@ -38,7 +39,7 @@ fun TopProfile(
                     .padding(start = 8.dp)
             ) {
                 Text(
-                    text = "Selamat pagi",
+                    text = Date().getGreeting(),
                     style = MaterialTheme.typography.titleMedium,
                     fontSize = 18.sp)
                 Text(

@@ -1,10 +1,13 @@
 package com.app.lancertion.di
 
+import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.room.Room
 import com.app.lancertion.common.Constants
 import com.app.lancertion.common.dataStore
+import com.app.lancertion.data.data_source.DiagnoseDatabase
 import com.app.lancertion.data.remote.LancertionAuthApi
 import com.app.lancertion.data.remote.LancertionDiagnoseApi
 import com.app.lancertion.data.repository.LancertionAuthRepositoryImpl
@@ -47,8 +50,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLancertionDiagnoseRepository(api: LancertionDiagnoseApi): LancertionDiagnoseRepository {
-        return LancertionDiagnoseRepositoryImpl(api)
+    fun provideLancertionDiagnoseRepository(api: LancertionDiagnoseApi, db: DiagnoseDatabase): LancertionDiagnoseRepository {
+        return LancertionDiagnoseRepositoryImpl(api, db.DiagnoseDao)
     }
 
     @Provides
@@ -64,5 +67,15 @@ object AppModule {
         dataStore: DataStore<Preferences>
     ): LancertionAuthRepository {
         return LancertionAuthRepositoryImpl(api, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDiagnoseDatabase(app: Application): DiagnoseDatabase {
+        return Room.databaseBuilder(
+            app,
+            DiagnoseDatabase::class.java,
+            DiagnoseDatabase.DATABASE_NAME
+        ).build()
     }
 }

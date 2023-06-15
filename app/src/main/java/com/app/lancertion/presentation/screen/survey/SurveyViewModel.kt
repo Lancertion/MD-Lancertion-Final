@@ -8,9 +8,13 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.lancertion.common.Resource
+import com.app.lancertion.common.util.Date
 import com.app.lancertion.data.remote.dto.Input
 import com.app.lancertion.data.remote.dto.asDiagnoseBody
 import com.app.lancertion.data.remote.request.DiagnoseBody
+import com.app.lancertion.domain.model.Diagnose
+import com.app.lancertion.domain.model.DiagnoseDb
+import com.app.lancertion.domain.use_case.diagnose_database.DiagnoseDatabaseUseCase
 import com.app.lancertion.domain.use_case.get_diagnose.GetDiagnoseUseCase
 import com.app.lancertion.presentation.screen.diagnose.DiagnoseState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,11 +22,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SurveyViewModel @Inject constructor(
-    private val getDiagnoseUseCase: GetDiagnoseUseCase
+    private val getDiagnoseUseCase: GetDiagnoseUseCase,
+    private val diagnoseDatabaseUseCase: DiagnoseDatabaseUseCase
 ): ViewModel() {
 
     private val _diagnoseState = mutableStateOf<DiagnoseState>(DiagnoseState())
@@ -70,6 +76,7 @@ class SurveyViewModel @Inject constructor(
         getDiagnoseUseCase(body).onEach { result ->
             when(result) {
                 is Resource.Success -> {
+                    result.data?.let { addToDatabase(it) }
                     Log.d("diagnose success", result.data.toString())
                     _diagnoseState.value = DiagnoseState(
                         diagnose = result.data,
@@ -96,6 +103,25 @@ class SurveyViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun addToDatabase(data: Diagnose) {
+        val diagnose = data.input?.let {
+            DiagnoseDb(
+                date = Date().getNow(),
+                alcoholUse = it.alcoholUse,
+                balacedDiet = it.balacedDiet,
+                coughingOfBloodval = it.coughingOfBloodval,
+                dustAllergy = it.dustAllergy,
+                geneticRisk = it.geneticRisk,
+                obesity = it.obesity,
+                smoker = it.smoker,
+                result = data.result
+            )
+        }
+        viewModelScope.launch {
+            diagnose?.let { diagnoseDatabaseUseCase.addDiagnose(it) }
+        }
     }
 
     fun resetDiagnose() {
