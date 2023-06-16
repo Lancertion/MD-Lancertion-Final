@@ -61,7 +61,8 @@ fun GuestScreen(
                 .padding(vertical = 16.dp)
         )
         Row(
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Button(
                 onClick = { viewModel.login() },
