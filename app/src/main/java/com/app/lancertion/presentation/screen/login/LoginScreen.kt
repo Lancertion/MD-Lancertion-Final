@@ -1,6 +1,5 @@
 package com.app.lancertion.presentation.screen.login
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,10 +14,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -46,7 +47,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.lancertion.R
 import com.app.lancertion.presentation.ui.theme.LancertionTheme
 
@@ -62,6 +62,7 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val loginState = viewModel.loginState.value
     var showPassword by remember { mutableStateOf(value = false) }
+    val isError by viewModel.isError.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,17 +209,51 @@ fun LoginScreen(
         }
     }
 
-    if(loginState.isLoading) {
-        Log.d("status", "loading")
-    } else {
+    if(!loginState.isLoading) {
         if(loginState.data != null) {
             onLogin()
             loginState.data = null
-            Log.d("status", "logged in")
-        } else {
-            Log.d("status", "login error")
         }
     }
+
+//    if(loginState.isLoading) {
+//
+//    } else {
+//        if(loginState.data != null) {
+//
+//
+//        } else {
+//
+//        }
+//    }
+
+    if(isError) {
+        Alert {
+            viewModel.unsetError()
+        }
+    }
+}
+
+@Composable
+fun Alert(
+    closeDialog: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = {
+            closeDialog()
+        },
+        icon = { Icon(Icons.Filled.Error, contentDescription = null) },
+        confirmButton = {
+            TextButton(onClick = {
+                closeDialog()
+            }) {
+                Text(text = "Iya")
+            }
+        },
+        text = {
+            Text(text = "Gagal masuk, pastikan email dan password Anda sudah benar")
+        }
+    )
 }
 
 @Preview

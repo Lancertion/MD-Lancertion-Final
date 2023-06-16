@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -19,17 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.lancertion.R
-import com.app.lancertion.presentation.ui.theme.LancertionTheme
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
     onDiagnose: () -> Unit
 ) {
     Column(
@@ -55,15 +50,15 @@ fun HomeScreen(
         }
 
         Row(
-            verticalAlignment = Alignment.Bottom,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .background(Color.White, RoundedCornerShape(8.dp))
                 .padding(start = 8.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.doctor),
+                painter = painterResource(id = R.drawable.health_2),
                 contentDescription = "Doctor",
-                modifier = Modifier.heightIn()
+                modifier = Modifier.width(90.dp)
             )
             Column(
                 horizontalAlignment = Alignment.End,

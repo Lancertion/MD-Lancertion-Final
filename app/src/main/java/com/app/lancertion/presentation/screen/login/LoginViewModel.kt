@@ -1,10 +1,8 @@
 package com.app.lancertion.presentation.screen.login
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.lancertion.common.Resource
@@ -31,6 +29,9 @@ class LoginViewModel @Inject constructor(
     private val _loginState = mutableStateOf(LoginState())
     val loginState: State<LoginState> = _loginState
 
+    private val _isError = MutableStateFlow(false)
+    val isError: StateFlow<Boolean> = _isError.asStateFlow()
+
     fun setEmail(email: String) {
         _uiState.value = uiState.value.copy(email = email)
     }
@@ -41,14 +42,14 @@ class LoginViewModel @Inject constructor(
 
     fun login() {
         val loginBody = LoginBody(
-            email = uiState.value.email,
+            email = uiState.value.email.trim(),
             password = uiState.value.password
         )
         loginUseCase(loginBody).onEach {result ->
             when(result) {
                 is Resource.Success -> {
-                    Log.d("login", "sukses")
                     result.data?.let {user ->
+                        Log.d("user save to pref", user.toString())
                         getAuthUseCase.save(user)
                         _loginState.value = loginState.value.copy(
                             isLoading = false,
@@ -57,7 +58,9 @@ class LoginViewModel @Inject constructor(
                     }
                 }
                 is Resource.Error -> {
-                    Log.d("login", "${result.message.isNullOrBlank()}")
+                    if(result.message == "Invalid email or password") {
+                        setError()
+                    }
                     _loginState.value = loginState.value.copy(
                         isLoading = false,
                         isError = true,
@@ -65,13 +68,20 @@ class LoginViewModel @Inject constructor(
                     )
                 }
                 is Resource.Loading -> {
-                    Log.d("login", "loading")
                     _loginState.value = loginState.value.copy(
                         isLoading = true
                     )
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun setError() {
+        _isError.value = true
+    }
+
+    fun unsetError() {
+        _isError.value = false
     }
 
 }

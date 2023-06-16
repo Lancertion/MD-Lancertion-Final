@@ -1,18 +1,9 @@
 package com.app.lancertion.presentation.screen.guest
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.lancertion.domain.model.User
 import com.app.lancertion.domain.use_case.get_auth.GetAuthUseCase
-import com.app.lancertion.presentation.screen.register.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +32,8 @@ class GuestViewModel @Inject constructor(
                 fullName = uiState.value.name,
                 token = uiState.value.token,
                 email = "",
-                password = ""
+                password = "",
+                id = 0
             ))
 
             openDialog()

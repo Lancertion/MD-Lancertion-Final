@@ -14,6 +14,7 @@ fun UserDto.toUser(): User {
         fullName = fullName,
         email = email,
         password = "",
-        token = ""
+        token = "",
+        id = id
     )
 }

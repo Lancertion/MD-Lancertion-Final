@@ -1,6 +1,5 @@
 package com.app.lancertion.presentation.component
 
-import android.util.Log.e
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,13 +15,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.lancertion.R
+import com.app.lancertion.common.util.Avatar
 import com.app.lancertion.common.util.Date
 import com.app.lancertion.presentation.ui.theme.LancertionTheme
 
 @Composable
 fun TopProfile(
     name: String,
+    userId: Int,
     onLogout: () -> Unit
 ) {
     Row(
@@ -31,7 +31,7 @@ fun TopProfile(
             .fillMaxWidth(),
     ) {
         Row {
-            Image(painter = painterResource(id = R.drawable.avatar), contentDescription = "Avatar")
+            Image(painter = painterResource(id = Avatar().getFromId(userId)), contentDescription = "Avatar")
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -62,6 +62,6 @@ fun TopProfile(
 @Composable
 fun TopProfilePreview() {
     LancertionTheme {
-        TopProfile("", {})
+        TopProfile("",0) {}
     }
 }

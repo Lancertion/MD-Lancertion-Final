@@ -1,11 +1,8 @@
 package com.app.lancertion.common.util
 
 import android.annotation.SuppressLint
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 class Date: Date() {
 
@@ -22,6 +19,21 @@ class Date: Date() {
         val nth = dd.format(this)
         val yy = yyy.format(this)
         return "$day, $nth $mon $yy"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getFromPost(datePost: String = "2023-06-15T11:12:13.000Z"): String {
+
+        val year = datePost.slice(0..3)
+        val month = datePost.slice(5..6)
+        val day = datePost.slice(8..9)
+
+        val formatInput = SimpleDateFormat("dd/MM/yyy")
+        val date: Date = formatInput.parse("$day/$month/$year") as Date
+        val formatOutput = SimpleDateFormat("u")
+        val hari = formatOutput.format(date)
+
+        return "${parseDay(hari.toInt())}, $day ${parseMon(month.toInt())} $year"
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -1,6 +1,5 @@
 package com.app.lancertion.presentation.screen.register
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -26,6 +25,12 @@ class RegisterViewModel @Inject constructor(
 
     private val _dialogOpen = MutableStateFlow(false)
     val dialogOpen: StateFlow<Boolean> = _dialogOpen.asStateFlow()
+
+    private val _isError = MutableStateFlow(false)
+    val isError: StateFlow<Boolean> = _isError.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage: StateFlow<String> = _errorMessage.asStateFlow()
 
     private val _registerState = mutableStateOf(RegisterState())
     private val registerState: State<RegisterState> = _registerState
@@ -53,8 +58,8 @@ class RegisterViewModel @Inject constructor(
 
     fun register() {
         val registerBody = RegisterBody(
-            fullName = uiState.value.name,
-            email = uiState.value.email,
+            fullName = uiState.value.name.trim(),
+            email = uiState.value.email.trim(),
             password = uiState.value.password
         )
 
@@ -68,6 +73,11 @@ class RegisterViewModel @Inject constructor(
                     openDialog()
                 }
                 is Resource.Error -> {
+                    if(result.message == "HTTP 400 ") {
+                        setError("400")
+                    } else if(result.message == "HTTP 409 ") {
+                        setError("409")
+                    }
                     _registerState.value = registerState.value.copy(
                         isLoading = false,
                         error = result.message.toString()
@@ -80,6 +90,20 @@ class RegisterViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+
+    fun setError(code: String) {
+        _errorMessage.value = when(code) {
+            "400" -> "Pendaftaran gagal, pastikan nama, email, dan password Anda sudah terisi dengan benar"
+            "409" -> "Email sudah digunakan"
+            else -> ""
+        }
+        _isError.value = true
+    }
+
+    fun unsetError() {
+        _isError.value = false
     }
 
 }

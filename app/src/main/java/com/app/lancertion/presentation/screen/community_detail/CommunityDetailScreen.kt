@@ -110,7 +110,7 @@ fun CommunityDetailScreen(
                     ) {
                         items(listComment) { comment ->
                             CommunityCard(
-                                author = "Anonymous",
+                                author = comment.pengirim,
                                 userId = comment.user_id,
                                 date = comment.tanggal,
                                 topic = comment.comment,
