@@ -1,6 +1,5 @@
 package com.app.lancertion.presentation.screen.survey
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -75,7 +74,7 @@ class SurveyViewModel @Inject constructor(
             when(result) {
                 is Resource.Success -> {
                     result.data?.let { addToDatabase(it) }
-                    Log.d("diagnose success", result.data.toString())
+
                     _diagnoseState.value = DiagnoseState(
                         diagnose = result.data,
                         isLoading = false
@@ -86,7 +85,6 @@ class SurveyViewModel @Inject constructor(
                     if(result.message.toString() == "Couldn't reach server. Check your internet connection.") {
                         getDiagnose(body)
                     } else {
-                        Log.d("diagnose error", result.message.toString())
                         _diagnoseState.value = DiagnoseState(
                             error = result.message ?: "An unexpected error occured",
                             isLoading = false
@@ -96,9 +94,6 @@ class SurveyViewModel @Inject constructor(
                 }
                 is Resource.Loading -> {
                     _onDiagnose.value = true
-
-                    Log.d("diagnose loading", "please wait...")
-
                     _diagnoseState.value = DiagnoseState(
                         isLoading = true
                     )

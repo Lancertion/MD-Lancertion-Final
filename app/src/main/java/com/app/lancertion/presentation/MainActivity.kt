@@ -39,7 +39,6 @@ import com.app.lancertion.presentation.screen.diagnose.DiagnoseViewModel
 import com.app.lancertion.presentation.screen.guest.GuestScreen
 import com.app.lancertion.presentation.screen.guest.GuestViewModel
 import com.app.lancertion.presentation.screen.home.HomeScreen
-import com.app.lancertion.presentation.screen.home.HomeViewModel
 import com.app.lancertion.presentation.screen.login.LoginScreen
 import com.app.lancertion.presentation.screen.login.LoginViewModel
 import com.app.lancertion.presentation.screen.register.RegisterScreen
@@ -180,18 +179,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(Screen.Home.route) {
-                                val vm: HomeViewModel by viewModels()
                                 HomeScreen(
-                                    viewModel = vm,
-//                                    onDiagnose = {
-//                                        navController.navigate(Screen.Diagnose.route) {
-//                                            popUpTo(navController.graph.findStartDestination().id) {
-//                                                saveState = true
-//                                            }
-//                                            restoreState = true
-//                                            launchSingleTop = true
-//                                        }
-//                                    }
                                     onDiagnose = {
                                         navController.navigate(Screen.Survey.route){
                                             popUpTo(navController.graph.findStartDestination().id) {
