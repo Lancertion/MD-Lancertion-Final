@@ -1,6 +1,5 @@
 package com.app.lancertion.presentation.screen.community_detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.lancertion.common.Resource
@@ -94,7 +93,6 @@ class CommunityDetailViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     _state.value.comments = result.data
-                    Log.d("data", state.value.comments.toString())
                     _isLoading.value = false
                 }
                 is Resource.Error -> {

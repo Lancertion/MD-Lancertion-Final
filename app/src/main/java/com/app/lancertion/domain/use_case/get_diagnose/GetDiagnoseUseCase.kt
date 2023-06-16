@@ -1,6 +1,5 @@
 package com.app.lancertion.domain.use_case.get_diagnose
 
-import android.util.Log
 import com.app.lancertion.common.Resource
 import com.app.lancertion.data.remote.dto.toDiagnose
 import com.app.lancertion.data.remote.request.DiagnoseBody
@@ -18,7 +17,7 @@ class GetDiagnoseUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val diagnose = repository.getDiagnose(body).toDiagnose()
-            Log.d("result", "hai")
+
             emit(Resource.Success(diagnose))
         } catch (e: retrofit2.HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
