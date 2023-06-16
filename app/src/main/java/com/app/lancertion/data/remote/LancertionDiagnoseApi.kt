@@ -1,6 +1,5 @@
 package com.app.lancertion.data.remote
 import com.app.lancertion.data.remote.dto.DiagnoseDto
-import com.app.lancertion.data.remote.dto.Input
 import com.app.lancertion.data.remote.request.DiagnoseBody
 import retrofit2.http.Body
 import retrofit2.http.Headers

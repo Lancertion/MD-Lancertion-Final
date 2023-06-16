@@ -1,6 +1,5 @@
 package com.app.lancertion.domain.model
 
-import com.app.lancertion.data.remote.dto.Input
 import com.app.lancertion.data.remote.request.DiagnoseBody
 
 data class Diagnose(

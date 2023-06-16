@@ -2,7 +2,6 @@ package com.app.lancertion.domain.use_case.get_diagnose
 
 import android.util.Log
 import com.app.lancertion.common.Resource
-import com.app.lancertion.data.remote.dto.Input
 import com.app.lancertion.data.remote.dto.toDiagnose
 import com.app.lancertion.data.remote.request.DiagnoseBody
 import com.app.lancertion.domain.model.Diagnose

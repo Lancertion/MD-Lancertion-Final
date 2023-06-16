@@ -1,9 +1,9 @@
 package com.app.lancertion.data.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.app.lancertion.data.remote.LancertionAuthApi
 import com.app.lancertion.data.remote.dto.GetUsersDto
@@ -13,12 +13,7 @@ import com.app.lancertion.data.remote.request.LoginBody
 import com.app.lancertion.data.remote.request.RegisterBody
 import com.app.lancertion.domain.model.User
 import com.app.lancertion.domain.repository.LancertionAuthRepository
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
-import java.io.IOException
-import java.lang.Exception
 import javax.inject.Inject
 
 class LancertionAuthRepositoryImpl @Inject constructor(
@@ -43,6 +38,7 @@ class LancertionAuthRepositoryImpl @Inject constructor(
             preference[email] = user.email
             preference[password] = user.password
             preference[token] = user.token
+            preference[id] = user.id
         }
     }
 
@@ -56,9 +52,11 @@ class LancertionAuthRepositoryImpl @Inject constructor(
         private const val EMAIL = "email"
         private const val PASSWORD = "password"
         private const val TOKEN = "token"
+        private const val ID = "id"
         val fullName = stringPreferencesKey(FULL_NAME)
         val email = stringPreferencesKey(EMAIL)
         val password = stringPreferencesKey(PASSWORD)
         val token = stringPreferencesKey(TOKEN)
+        val id = intPreferencesKey(ID)
     }
 }

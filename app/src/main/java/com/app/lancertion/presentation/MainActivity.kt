@@ -1,7 +1,6 @@
 package com.app.lancertion.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,14 +20,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.app.lancertion.presentation.component.BottomBar
 import com.app.lancertion.presentation.component.TopProfile
 import com.app.lancertion.presentation.navigation.Screen
+import com.app.lancertion.presentation.screen.community.CommunityGuestScreen
 import com.app.lancertion.presentation.screen.community.CommunityScreen
+import com.app.lancertion.presentation.screen.community.CommunityViewModel
+import com.app.lancertion.presentation.screen.community_detail.CommunityDetailScreen
+import com.app.lancertion.presentation.screen.community_detail.CommunityDetailViewModel
 import com.app.lancertion.presentation.screen.diagnose.DiagnoseScreen
 import com.app.lancertion.presentation.screen.diagnose.DiagnoseViewModel
 import com.app.lancertion.presentation.screen.guest.GuestScreen
@@ -60,14 +66,21 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route
+
+
                     val viewModel: MainViewModel by viewModels()
+                    val communityViewModel: CommunityViewModel by viewModels()
+                    val communityDetailViewModel: CommunityDetailViewModel by viewModels()
+
                     var startDestination by remember { mutableStateOf(Screen.Login.route) }
-                    
+                    val userId by viewModel.userId.collectAsState()
+
                     Scaffold(
                         topBar = {
                             when(currentRoute) {
                                 Screen.Diagnose.route, Screen.Home.route -> TopProfile(
                                     name = viewModel.name.value,
+                                    userId = userId,
                                     onLogout = {
                                         viewModel.logout()
                                         navController.navigate(Screen.Login.route) {
@@ -76,6 +89,10 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                         viewModel.refreshToken()
+                                        communityViewModel.getToken()
+                                        communityViewModel.getId()
+                                        communityDetailViewModel.getUserId()
+                                        communityDetailViewModel.getToken()
                                     }
                                 )
                             }
@@ -119,6 +136,10 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                         viewModel.refreshToken()
+                                        communityViewModel.getToken()
+                                        communityViewModel.getId()
+                                        communityDetailViewModel.getUserId()
+                                        communityDetailViewModel.getToken()
                                     }
                                 )
                             }
@@ -152,6 +173,8 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                         viewModel.refreshToken()
+                                        communityViewModel.getToken()
+                                        communityDetailViewModel.getToken()
                                     }
                                 )
                             }
@@ -189,7 +212,38 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(Screen.Community.route) {
-                                CommunityScreen()
+                                if(viewModel.token.value == "guest_token") {
+                                    CommunityGuestScreen()
+                                } else {
+                                    communityViewModel.getPosts()
+                                    CommunityScreen(
+                                        viewModel = communityViewModel,
+                                        navigateToDetail = { post ->
+                                           navController.navigate(
+                                               "${Screen.DetailCommunity.route}/${post.post_id}"
+                                           )
+                                        }
+                                    )
+                                }
+                            }
+
+                            composable(
+                                Screen.DetailCommunityId.route,
+                                arguments = listOf(
+                                    navArgument("postId") {
+                                        type = NavType.IntType
+                                    }
+                                )
+                            ) {
+                                val postId = it.arguments?.getInt("postId")
+                                postId?.let { id -> communityDetailViewModel.getPostId(id) }
+
+                                CommunityDetailScreen(
+                                    viewModel = communityDetailViewModel,
+                                    navigateBack = {
+                                        navController.navigateUp()
+                                    }
+                                )
                             }
 
                             composable(Screen.Survey.route) {

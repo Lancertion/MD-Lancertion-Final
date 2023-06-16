@@ -11,10 +11,11 @@ import com.app.lancertion.data.data_source.DiagnoseDatabase
 import com.app.lancertion.data.remote.LancertionAuthApi
 import com.app.lancertion.data.remote.LancertionDiagnoseApi
 import com.app.lancertion.data.repository.LancertionAuthRepositoryImpl
+import com.app.lancertion.data.repository.LancertionCommunityRepositoryImpl
 import com.app.lancertion.data.repository.LancertionDiagnoseRepositoryImpl
 import com.app.lancertion.domain.repository.LancertionAuthRepository
+import com.app.lancertion.domain.repository.LancertionCommunityRepository
 import com.app.lancertion.domain.repository.LancertionDiagnoseRepository
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,17 +57,25 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataStorePreferences(@ApplicationContext appContext: Context): DataStore<Preferences> {
-        return appContext.dataStore
-    }
-
-    @Provides
-    @Singleton
     fun provideLancertionAuthRepository(
         api: LancertionAuthApi,
         dataStore: DataStore<Preferences>
     ): LancertionAuthRepository {
         return LancertionAuthRepositoryImpl(api, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLancertionCommunityRepository(
+        api: LancertionAuthApi
+    ): LancertionCommunityRepository {
+        return LancertionCommunityRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStorePreferences(@ApplicationContext appContext: Context): DataStore<Preferences> {
+        return appContext.dataStore
     }
 
     @Provides

@@ -8,7 +8,6 @@ import com.app.lancertion.data.remote.dto.RegisterDto
 import com.app.lancertion.data.remote.request.LoginBody
 import com.app.lancertion.data.remote.request.RegisterBody
 import com.app.lancertion.domain.model.User
-import kotlinx.coroutines.flow.Flow
 
 interface LancertionAuthRepository {
 

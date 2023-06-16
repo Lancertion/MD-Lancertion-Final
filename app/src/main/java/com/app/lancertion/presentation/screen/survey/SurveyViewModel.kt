@@ -68,8 +68,6 @@ class SurveyViewModel @Inject constructor(
         )
         val diagnoseBody = input.asDiagnoseBody()
         getDiagnose(diagnoseBody)
-
-        Log.d("diagnose to api", input.toString())
     }
 
     fun getDiagnose(body: DiagnoseBody) {
@@ -85,12 +83,16 @@ class SurveyViewModel @Inject constructor(
                     _onDiagnose.value = false
                 }
                 is Resource.Error -> {
-                    Log.d("diagnose error", result.message.toString())
-                    _diagnoseState.value = DiagnoseState(
-                        error = result.message ?: "An unexpected error occured",
-                        isLoading = false
-                    )
-                    _onDiagnose.value = false
+                    if(result.message.toString() == "Couldn't reach server. Check your internet connection.") {
+                        getDiagnose(body)
+                    } else {
+                        Log.d("diagnose error", result.message.toString())
+                        _diagnoseState.value = DiagnoseState(
+                            error = result.message ?: "An unexpected error occured",
+                            isLoading = false
+                        )
+                        _onDiagnose.value = false
+                    }
                 }
                 is Resource.Loading -> {
                     _onDiagnose.value = true
